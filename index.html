@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>HLS Player - Kanallar</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #111;
+      color: #fff;
+    }
+    video {
+      width: 80%;
+      max-width: 800px;
+      margin-top: 20px;
+      border: 2px solid #444;
+      border-radius: 10px;
+      background: black;
+    }
+    select {
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 20px;
+      border: none;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h1>HTTP Live Streaming Player</h1>
+
+  <select id="channels">
+    <option value="http://95.174.71.114/TR-BEINSPORT1/index.m3u8">Bein Sports 1</option>
+    <option value="http://95.174.71.114/TR-BEINSPORT2/index.m3u8">Bein Sports 2</option>
+    <option value="http://95.174.71.114/TR-BEINSPORT3/index.m3u8">Bein Sports 3</option>
+    <option value="http://95.174.71.114/TR-BEINSPORT4/index.m3u8">Bein Sports 4</option>
+  </select>
+
+  <br>
+  <video id="video" controls autoplay></video>
+
+  <script>
+    const video = document.getElementById('video');
+    const select = document.getElementById('channels');
+
+    function playChannel() {
+      const url = select.value;
+
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(url);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = url;
+        video.addEventListener('loadedmetadata', () => video.play());
+      } else {
+        alert("Bu tarayıcı HLS desteklemiyor!");
+      }
+    }
+
+    // Kanal değiştiğinde otomatik oynat
+    select.addEventListener('change', playChannel);
+
+    // Sayfa açıldığında ilk kanal otomatik oynasın
+    playChannel();
+  </script>
+</body>
+</html>
